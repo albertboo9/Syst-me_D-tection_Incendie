@@ -14,7 +14,6 @@ password = "mypassword"
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("Connecté au broker MQTT avec succès !")
-        client.publish("home/fire_detection", "hello mqtt!")
         client.subscribe("home/fire_detection")
     else:
         print(f"Échec de la connexion (code de retour {str(rc)})")
