@@ -1,14 +1,16 @@
 
 import paho.mqtt.client as mqtt
 import joblib
+import pandas as pd
 import json
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 
 # désérialisation des composantes necessaire pour notre travail
 model = joblib.load('../models/regressionLineaire.joblib')
-#apc = joblib.load('../models/APC.joblib')
+apc = joblib.load('../models/APC.joblib')
 #scaler = joblib.load('../models/scaler.joblib')
+scaler = StandardScaler()
 
 # Paramètres de connexion
 broker_address = "127.0.0.1"
@@ -19,11 +21,20 @@ password = "mypassword"
 def on_message(client, userdata, msg):
      print(msg.topic + " " + str(msg.payload))
      data = json.load(msg.payload)
+     datascaled = scaler.fit_transform(data)
 
-     dataScaled = scaler.fit_tranform(data)
+     component  = apc.fit_transform(datascaled)
+     df = pd.DataFrame(component)
+
+     predict = model.predict(df)
+
+     if predict == 0 :
+         client.publish("home/fire_detection", "pas d'incendie 🙂‍↔️ ")
+     else:
+         client.publish("home/fire_detection", "il y a incendie !!! 🤯 ")
 
 
-def on_connect(client, userdata, flags, rc):.
+def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("Connecté au broker MQTT avec succès !")
         client.subscribe("home/fire_detection")
