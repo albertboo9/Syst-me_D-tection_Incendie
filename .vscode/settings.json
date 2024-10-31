@@ -2,8 +2,8 @@
   "vsmqtt.brokerProfiles": [
     {
       "name": "TP_SDI",
-      "host": "localhost",
-      "port": 1883,
+      "host": "127.0.0.1",
+      "port": 8888,
       "clientId": "vsmqtt_client_9fa7"
     }
   ]
