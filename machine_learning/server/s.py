@@ -43,10 +43,10 @@ variable2 = {
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("Connecté au broker MQTT avec succès !")
-        data = json.dumps(variable)
+        data = json.dumps(variable2)
         #client.publish("home/fire_detection", "hello albert! ")
         client.publish("home/fire_detection", data)
-        client.subscribe("home/alarm")
+        client.subscribe("home/alarm", 1)
     else:
         print(f"Échec de la connexion (code de retour {str(rc)})")
        
@@ -58,8 +58,6 @@ client = mqtt.Client()
 client.username_pw_set(user, password)
 client.on_connect = on_connect
 client.on_message = on_message
-
-
 
 client.connect(broker_address, port)
 client.loop_forever()
