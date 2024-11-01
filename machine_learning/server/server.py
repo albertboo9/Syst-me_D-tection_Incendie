@@ -20,7 +20,7 @@ password = "mypassword"
 
 def on_message(client, userdata, msg):
      print(msg.topic + " " + str(msg.payload))
-     data = json.load(msg.payload)
+     data = json.loads(msg.payload)
      datascaled = scaler.fit_transform(data)
 
      component  = apc.fit_transform(datascaled)
