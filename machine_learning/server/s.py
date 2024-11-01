@@ -22,20 +22,20 @@ variable = {
     "NC1.0":0.127,
     "NC2.5":0.051
 }
-
+c = {17.242, 53.71, 1117,400,12911,19452,938.702,1.63,1.7,11.25,1.754,0.04}
 variable2 = {
-    "Temperature[C]":-5.14,
-    "Humidity[%]":50.67,
-    "TVOC[ppb]":353,
+    "Temperature[C]":17.242,
+    "Humidity[%]":53.71,
+    "TVOC[ppb]":1117,
     "eCO2[ppm]":400,
-    "Raw H2":13075,
-    "Raw Ethanol":19913,
-    "Pressure[hPa]":939.281,
-    "PM1.0":0.29,
-    "PM2.5":0.3,
-    "NC0.5":1.99,
-    "NC1.0":0.311,
-    "NC2.5":0.007
+    "Raw H2":12911,
+    "Raw Ethanol":19452,
+    "Pressure[hPa]":938.702,
+    "PM1.0":1.63,
+    "PM2.5":1.7,
+    "NC0.5":11.25,
+    "NC1.0":1.754,
+    "NC2.5":0.04
 }
 
 
@@ -43,7 +43,7 @@ variable2 = {
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("Connecté au broker MQTT avec succès !")
-        data = json.dumps(variable)
+        data = json.dumps(variable2)
         #client.publish("home/fire_detection", "hello albert! ")
         client.publish("home/fire_detection", data)
         client.subscribe("home/alarm")
