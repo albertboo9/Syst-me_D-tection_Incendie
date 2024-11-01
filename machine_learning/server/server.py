@@ -47,7 +47,7 @@ def on_message(client, userdata, msg):
     predict = model.predict(cf[:1])
 
     # Publication du résultat
-    if predict == 1:
+    if predict > 0.6 :
         client.publish("home/alarm", "Attention il y'a incendie ")
         print("incendie !!!! ")
     else:

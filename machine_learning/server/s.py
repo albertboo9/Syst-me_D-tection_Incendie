@@ -43,7 +43,7 @@ variable2 = {
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("Connecté au broker MQTT avec succès !")
-        data = json.dumps(variable2)
+        data = json.dumps(variable)
         #client.publish("home/fire_detection", "hello albert! ")
         client.publish("home/fire_detection", data)
         client.subscribe("home/alarm")
