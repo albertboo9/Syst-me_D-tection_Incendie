@@ -5,7 +5,7 @@ import json
 # Paramètres de connexion
 broker_address = "127.0.0.1"
 port = 8888
-user = "python_server"
+user = "arduino_side"
 password = "mypassword"
 
 variable = {
@@ -38,26 +38,26 @@ variable2 = {
     "NC2.5":0.04
 }
 
-
+def on_message(client, userdata, msg):
+    print(msg.topic + " = " + msg.payload.decode('utf-8'))
 
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("Connecté au broker MQTT avec succès !")
-        data = json.dumps(variable2)
+        data = json.dumps(variable)
         #client.publish("home/fire_detection", "hello albert! ")
         client.publish("home/fire_detection", data)
-        client.subscribe("home/alarm", 1)
+        client.subscribe("house/alarm")
     else:
         print(f"Échec de la connexion (code de retour {str(rc)})")
        
 
-def on_message(client, userdata, msg):
-    print(msg.topic)
+
 
 client = mqtt.Client()
 client.username_pw_set(user, password)
-client.on_connect = on_connect
-client.on_message = on_message
+client.on_connect = on_connect()
+client.on_message = on_message()
 
 client.connect(broker_address, port)
 client.loop_forever()

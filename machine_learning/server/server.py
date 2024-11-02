@@ -49,10 +49,10 @@ def on_message(client, userdata, msg):
 
     # Publication du résultat
     if predict > 0.6 :
-        client.publish("home/alarm", "Attention il y'a incendie ")
+        client.publish("house/alarm", "Attention il y'a incendie ")
         print("incendie !!!! ")
     else:
-        client.publish("home/alarm", " il y a pas d'incendie ")
+        client.publish("house/alarm", " il y a pas d'incendie ")
         print("il ya pas un incendie !")
 
 
@@ -60,6 +60,7 @@ def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("Connecté au broker MQTT avec succès !")
         client.subscribe("home/fire_detection")
+        
     else:
         print(f"Échec de la connexion (code de retour {str(rc)})")
 
