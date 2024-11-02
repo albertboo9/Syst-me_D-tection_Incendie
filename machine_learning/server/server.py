@@ -45,6 +45,7 @@ def on_message(client, userdata, msg):
    
     # Prédiction
     predict = model.predict(cf[:1])
+    print
 
     # Publication du résultat
     if predict > 0.6 :
