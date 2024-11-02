@@ -1,6 +1,14 @@
 
 import paho.mqtt.client as mqtt
 import json
+import smtplib 
+
+#configuration de l'envoie des mail
+
+#host = "localhost"
+#port = 5555
+
+#smtpOBJ = smtplib.SMTP([host])
 
 # Paramètres de connexion
 broker_address = "127.0.0.1"
@@ -51,13 +59,14 @@ def on_connect(client, userdata, flags, rc):
     else:
         print(f"Échec de la connexion (code de retour {str(rc)})")
        
+#def email(mail, message):
 
 
 
 client = mqtt.Client()
 client.username_pw_set(user, password)
-client.on_connect = on_connect()
-client.on_message = on_message()
+client.on_connect = on_connect
+client.on_message = on_message
 
 client.connect(broker_address, port)
 client.loop_forever()
