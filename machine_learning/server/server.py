@@ -48,12 +48,14 @@ def on_message(client, userdata, msg):
     print
 
     # Publication du résultat
-    if predict > 0.6 :
+    if predict > 0.9 :
         client.publish("house/alarm", "Attention il y'a incendie ")
         print("incendie !!!! ")
+        print(predict)
     else:
         client.publish("house/alarm", " il y a pas d'incendie ")
-        print("il ya pas un incendie !")
+        print("il ya pas un incendie ! [0.82792007] ")
+        print(predict)
 
 
 def on_connect(client, userdata, flags, rc):

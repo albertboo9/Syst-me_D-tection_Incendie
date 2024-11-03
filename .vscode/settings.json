@@ -6,5 +6,6 @@
       "port": 8888,
       "clientId": "vsmqtt_client_9fa7"
     }
-  ]
+  ],
+  "window.autoDetectColorScheme": false
 }
