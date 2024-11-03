@@ -1,11 +1,8 @@
 import paho.mqtt.client as mqtt
 import joblib
-import decimal
 import pandas as pd
 import numpy as np
 import json
-from sklearn.decomposition import PCA
-from sklearn.preprocessing import StandardScaler
 
 # Désérialisation des modèles
 model = joblib.load('../models/regressionLineaire.joblib')
@@ -15,7 +12,7 @@ scaler = joblib.load('../models/scaler.joblib')
 # Paramètres de connexion MQTT
 broker_address = "127.0.0.1"
 port = 8888
-user = "python_server"
+user = "python_server" 
 password = "mypassword"
 numerical_col = ['Temperature[C]','Humidity[%]','TVOC[ppb]','eCO2[ppm]','Raw H2','Raw Ethanol','Pressure[hPa]','PM1.0','PM2.5','NC0.5','NC1.0','NC2.5']
 
