@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import json
 
+
 # Désérialisation des modèles
 model = joblib.load('../models/regressionLineaire.joblib')
 apc = joblib.load('../models/APC.joblib')
