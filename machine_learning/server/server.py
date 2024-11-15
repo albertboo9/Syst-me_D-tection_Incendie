@@ -6,7 +6,7 @@ import json
 
 
 # Désérialisation des modèles
-model = joblib.load('../models/regressionLineaire.joblib')
+model = joblib.load('../models/randomForest.joblib')
 apc = joblib.load('../models/APC.joblib')
 scaler = joblib.load('../models/scaler.joblib')
 
@@ -46,14 +46,12 @@ def on_message(client, userdata, msg):
     print
 
     # Publication du résultat
-    if predict > 0.9 :
+    if predict == 1 :
         client.publish("house/alarm", "Attention il y'a incendie ")
         print("incendie !!!! ")
-        print(predict)
     else:
         client.publish("house/alarm", " il y a pas d'incendie ")
-        print("il ya pas un incendie ! [0.82792007] ")
-        print(predict)
+        print("il ya pas un incendie !")
 
 
 def on_connect(client, userdata, flags, rc):
