@@ -2,8 +2,12 @@
 
 import customtkinter as ctk
 import json
-#import paho.mqtt.client as mqtt
-#import s
+import requests
+
+
+import flask
+from flask import jsonify
+
 
 #création de notre fenêtre 
 
@@ -39,7 +43,6 @@ def enregistrement(temp,hum,press,co,h,eth,n0,n1):
         "NC2.5":0.051
     }
 
-
 #on doit vérifier qu'ils sont des réels avant de les enregistrés
 def verify(temp,hum,press,co,h,eth,n0,n1):
     try:
@@ -69,8 +72,7 @@ def connexion():
         #si les données sont vraiment des entiers alors on stocke dans un fichier json temporaire
         enregistrement(temperature_val,humidite_val,pression_val,co2_val,h2_val,ethanol_val,nc0_val,nc1_val)
         with open("donnee.json","w") as fichier:
-            json.dump(donnee,fichier)
-            
+            data = json.dumps(donnee,fichier)
         for widget in frame1.winfo_children():
             widget.destroy()
 
@@ -81,15 +83,14 @@ def connexion():
         for elt in liste :
             message1=ctk.CTkLabel(frame1,text=elt)
             message1.pack(pady=5)
-        #envoi des données au serveur mqtt
+        #envoi des données au serveur http
+        response = requests.post('http://your_server_address:5000/predict', json=data)
 
-        broker_address = "127.0.0.1"
-        port = 8888
-        user = "adruino_side"
-        password = "mypassword"
-        client = mqtt.client()
-        client.username_pw_set(user,password)
-        client.connect(broker_address,port)
+        if response.status_code == 200:
+            prediction = response.json()['prediction']
+            print(prediction)
+        else:
+            print("Error sending data to server")
         val=ctk.CTkLabel(master=frame,width=250,height=25,corner_radius=20,placeholder_text="DONNEE ENVOYEES AU SERVEUR")
         val.pack(pady=5)
     else:
@@ -106,7 +107,6 @@ def animation ():
         label.configure(text_color="#AAAAAA")
     frame.pack_forget()
     frame1.pack(pady=20,padx=60,fill="both",expand=True)
-
 
 ################ la première Frame ########################
 frame=ctk.CTkFrame(master=log)
@@ -169,6 +169,8 @@ nc1.pack(pady=5)
 
 button=ctk.CTkButton(master=frame1,width=250,height=25,corner_radius=30,text="envoyer",text_color="white",command=connexion)
 button.pack(pady=12,padx=10)
+app = flask.Flask(__name__)
 
+# Variable globale pour stocker les données (à remplacer par une base de données si nécessaire)
 
 log.mainloop()

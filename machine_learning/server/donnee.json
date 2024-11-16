@@ -1,0 +1,16 @@
+{
+
+"Temperature[C]": 24.0, 
+"Humidity[%]": 34.0, 
+"TVOC[ppb]": 0, 
+"eCO2[ppm]": "34", 
+"Raw H2": 345.0, 
+"Raw Ethanol": 45.0, 
+"Pressure[hPa]": 2334.0, 
+"PM1.0": 0.06, 
+"PM2.5": 0.11, 
+"NC0.5": 0.1, 
+"NC1.0": 1.5, 
+"NC2.5": 0.051
+
+}

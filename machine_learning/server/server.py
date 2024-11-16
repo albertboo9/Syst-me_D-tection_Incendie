@@ -1,72 +1,62 @@
-import paho.mqtt.client as mqtt
-import joblib
-import pandas as pd
-import numpy as np
 import json
+import time
+import numpy as np
+import pandas as pd
+import threading
+from flask import Flask
+import joblib
 
-
-# Désérialisation des modèles
-model = joblib.load('../models/randomForest.joblib')
-apc = joblib.load('../models/APC.joblib')
-scaler = joblib.load('../models/scaler.joblib')
-
-# Paramètres de connexion MQTT
-broker_address = "127.0.0.1"
-port = 8888
-user = "python_server" 
-password = "mypassword"
+app = Flask(__name__)
 numerical_col = ['Temperature[C]','Humidity[%]','TVOC[ppb]','eCO2[ppm]','Raw H2','Raw Ethanol','Pressure[hPa]','PM1.0','PM2.5','NC0.5','NC1.0','NC2.5']
+# Charger les modèles et le scaler
+model = joblib.load('machine_learning/models/randomForest.joblib')
+apc = joblib.load('machine_learning/models/APC.joblib')
+scaler = joblib.load('machine_learning/models/scaler.joblib')
 
-def on_message(client, userdata, msg):
-    # Décodage du message MQTT
-    data = json.loads(msg.payload.decode('utf-8'))
+# Fichier JSON où stocker les données
+DATA_FILE = "machine_learning/server/donnee.json"
+
+def preprocess_data(data):
+    """Prétraite les données."""
+
     data_values = list(data.values())
-    
-
     # Conversion en tableau NumPy avec précision float64
     data_array = np.array([data_values], dtype=np.float64)
     dt = pd.DataFrame(data_array, columns=numerical_col)
-    # Standardisation (suppose que le scaler a été entraîné sur des données float64)
-    data_scaled = scaler.transform(dt)
 
-    # Application de l'ACP
-    component = apc.transform(data_scaled)
+    datascaled = scaler.transform(dt) #on standardise les données
+    
+    component = apc.transform(datascaled) # on réapplique l'apc
+    df = pd.DataFrame(component, columns=["Composante1","Composante2","Composante3"])
 
-    # Arrondi à 16 chiffres après la virgule
-    component_rounded = np.round(component, 16)
- 
-    df = pd.DataFrame(component_rounded, columns=["Composante1","Composante2","Composante3"])
+    return df
 
-    df.to_csv('../data/temp/component.csv', index=False)
+def predict_loop():
+    """Boucle de prédiction en arrière-plan."""
+    while True:
+        try:
+            # Charger les données depuis le fichier JSON
+            with open(DATA_FILE, 'r') as f:
+                data = json.load(f)
+            # Prétraitement des données
+            preprocessed_data = preprocess_data(data)
 
-    cf = pd.read_csv('../data/temp/component.csv')
-   
-    # Prédiction
-    predict = model.predict(cf[:1])
-    print
+            # Prédiction
+            prediction = model.predict(preprocessed_data)
+            if prediction == 1:
+                print("Attention, un incendie a été détecté !!!!! ")
+            else:
+                print("relax, pas d'incendie")
 
-    # Publication du résultat
-    if predict == 1 :
-        client.publish("house/alarm", "Attention il y'a incendie ")
-        print("incendie !!!! ")
-    else:
-        client.publish("house/alarm", " il y a pas d'incendie ")
-        print("il ya pas un incendie !")
+        except Exception as e:
+            print(f"Erreur lors de la prédiction : {e}")
+        time.sleep(3)  # Ajuster le délai selon vos besoins
+      
 
+if __name__ == '__main__':
+    # Lancer le thread pour les prédictions en arrière-plan
+    prediction_thread = threading.Thread(target=predict_loop)
+    prediction_thread.start()
 
-def on_connect(client, userdata, flags, rc):
-    if rc == 0:
-        print("Connecté au broker MQTT avec succès !")
-        client.subscribe("home/fire_detection")
-        
-    else:
-        print(f"Échec de la connexion (code de retour {str(rc)})")
-
-client = mqtt.Client()
-client.username_pw_set(user, password)
-client.on_connect = on_connect
-client.on_message = on_message
-
-
-client.connect(broker_address, port)
-client.loop_forever()
+    # Lancer le serveur Flask et SocketIO
+    socketio.run(app, host='0.0.0.0', port=5000)
