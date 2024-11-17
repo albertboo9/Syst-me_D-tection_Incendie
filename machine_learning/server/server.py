@@ -5,6 +5,7 @@ import pandas as pd
 import threading
 from flask import Flask
 import joblib
+import socketio
 
 app = Flask(__name__)
 numerical_col = ['Temperature[C]','Humidity[%]','TVOC[ppb]','eCO2[ppm]','Raw H2','Raw Ethanol','Pressure[hPa]','PM1.0','PM2.5','NC0.5','NC1.0','NC2.5']
