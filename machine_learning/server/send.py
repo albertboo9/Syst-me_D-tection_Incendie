@@ -2,10 +2,9 @@
 
 import customtkinter as ctk
 import json
-#import paho.mqtt.client as mqtt
-#import s
+import paho.mqtt.client as mqtt
 
-#création de notre fenêtre 
+#création de notre fenêtre
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
