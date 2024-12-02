@@ -4,12 +4,11 @@ import customtkinter as ctk
 import json
 import requests
 
-
 import flask
 from flask import jsonify
 
 
-#création de notre fenêtre 
+#création de notre fenêtre
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
@@ -96,9 +95,7 @@ def connexion():
     else:
         error=ctk.CTkLabel(master=frame,width=250,height=25,corner_radius=20,text="Erreur une des valeurs entrées n'est pas un nombre")
         error.pack(pady=5)
-
-########## FONCTION POUR CHANGER DE FRAME AVEC ANIMATION
-    
+  
 #########animation #################
 def animation ():
     for i in range(10):
